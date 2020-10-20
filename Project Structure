@@ -1,0 +1,23 @@
+- Project Structure:
+1. network
+2. chaincode
+3. application
+
+1. network:
+contains below:
+- Channel-artifacts - Channel configuration
+- crypto-materials - certificates for different entities on the network
+- docker configuration files
+- scripts to interact with Hyperledger fabric network
+
+2. chaincode:
+contains below:
+- contract.js - Smart contract
+- index.js 
+- package.json
+- node_modules 
+
+3. Application:
+contains below:
+- API's to expose the backend function written on the smart contracts
+- Client Directory which have the HTML,CSS files for the front-end
