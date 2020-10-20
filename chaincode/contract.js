@@ -110,7 +110,7 @@ class CertnetContract extends Contract {
 	}
 	
 	/**
-	 *
+	 * Verify Certificate 
 	 * @param ctx
 	 * @param studentId
 	 * @param courseId
