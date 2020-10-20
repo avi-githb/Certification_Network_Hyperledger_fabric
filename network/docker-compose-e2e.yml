@@ -1,0 +1,189 @@
+version: '2'
+
+volumes:
+  orderer.certification-network.com:
+  peer0.iit.certification-network.com:
+  peer1.iit.certification-network.com:
+  peer0.mhrd.certification-network.com:
+  peer1.mhrd.certification-network.com:
+  peer0.upgrad.certification-network.com:
+  peer1.upgrad.certification-network.com:
+
+networks:
+  certification:
+
+services:
+
+  ca.iit.certification-network.com:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.iit.certification-network.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      # - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.iit.certification-network.com-cert.pem
+      # - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/d781bd9c45247891bc41315d7b9ccb0ba52d7a858c4390f36b3c793ee7d44448_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d' # --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.iit.certification-network.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d781bd9c45247891bc41315d7b9ccb0ba52d7a858c4390f36b3c793ee7d44448_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/iit.certification-network.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.iit.certification-network.com
+    networks:
+      - certification
+
+  ca.mhrd.certification-network.com:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.mhrd.certification-network.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      # - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.mhrd.certification-network.com-cert.pem
+      # - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/d07ce94b63d454424942104bf693b43a0f95ba7238c8b061f4850ceed3e0f3ce_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d' # --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.mhrd.certification-network.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/d07ce94b63d454424942104bf693b43a0f95ba7238c8b061f4850ceed3e0f3ce_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/mhrd.certification-network.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.mhrd.certification-network.com
+    networks:
+      - certification
+
+  ca.upgrad.certification-network.com:
+    image: hyperledger/fabric-ca:latest
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.upgrad.certification-network.com
+      - FABRIC_CA_SERVER_TLS_ENABLED=false
+      # - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.upgrad.certification-network.com-cert.pem
+      # - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/a2815e8beca165242bbdc4817e10fe6a92234ee2ca9bbd2ad1daa36a3e791f14_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d' # --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.upgrad.certification-network.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/a2815e8beca165242bbdc4817e10fe6a92234ee2ca9bbd2ad1daa36a3e791f14_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/upgrad.certification-network.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.upgrad.certification-network.com
+    networks:
+      - certification
+
+  orderer.certification-network.com:
+    extends:
+      file:   docker-base/docker-compose-base.yaml
+      service: orderer.certification-network.com
+    container_name: orderer.certification-network.com
+    networks:
+      - certification
+
+  peer0.iit.certification-network.com:
+    container_name: peer0.iit.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer0.iit.certification-network.com
+    networks:
+      - certification
+
+  peer1.iit.certification-network.com:
+    container_name: peer1.iit.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer1.iit.certification-network.com
+    networks:
+      - certification
+
+  peer0.mhrd.certification-network.com:
+    container_name: peer0.mhrd.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer0.mhrd.certification-network.com
+    networks:
+      - certification
+
+  peer1.mhrd.certification-network.com:
+    container_name: peer1.mhrd.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer1.mhrd.certification-network.com
+    networks:
+      - certification
+
+  peer0.upgrad.certification-network.com:
+    container_name: peer0.upgrad.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer0.upgrad.certification-network.com
+    networks:
+      - certification
+
+  peer1.upgrad.certification-network.com:
+    container_name: peer1.upgrad.certification-network.com
+    extends:
+      file:  docker-base/docker-compose-base.yaml
+      service: peer1.upgrad.certification-network.com
+    networks:
+      - certification
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.iit.certification-network.com:7051
+      - CORE_PEER_LOCALMSPID=iitMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/iit.certification-network.com/peers/peer0.iit.certification-network.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/iit.certification-network.com/peers/peer0.iit.certification-network.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/iit.certification-network.com/peers/peer0.iit.certification-network.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/iit.certification-network.com/users/Admin@iit.certification-network.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./../chaincode/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode/
+   #   - ./../chaincode-advanced/:/opt/gopath/src/github.com/hyperledger/fabric/peer/chaincode-advanced/
+      - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+      - ./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+      - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    depends_on:
+      - ca.iit.certification-network.com
+      - ca.mhrd.certification-network.com
+      - ca.upgrad.certification-network.com
+      - orderer.certification-network.com
+      - peer0.iit.certification-network.com
+      - peer1.iit.certification-network.com
+      - peer0.mhrd.certification-network.com
+      - peer1.mhrd.certification-network.com
+      - peer0.upgrad.certification-network.com
+      - peer1.upgrad.certification-network.com
+    networks:
+      - certification
+
+  chaincode:
+    container_name: chaincode
+    image: hyperledger/fabric-ccenv:latest
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=chaincode
+      - CORE_PEER_ADDRESS=peer0.iit.certification-network.com:7051
+      - CORE_PEER_LOCALMSPID=iitMSP
+      - CORE_PEER_TLS_ENABLED=false
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/crypto/peerOrganizations/iit.certification-network.com/users/Admin@iit.certification-network.com/msp
+      - CORE_TLS_CLIENT_KEY_PATH=/opt/gopath/src/crypto/peerOrganizations/iit.certification-network.com/users/Admin@iit.certification-network.com/tls/client.key
+      - CORE_TLS_CLIENT_CERT_PATH=/opt/gopath/src/crypto/peerOrganizations/iit.certification-network.com/users/Admin@iit.certification-network.com/tls/client.crt
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/crypto/peerOrganizations/iit.certification-network.com/users/Admin@iit.certification-network.com/tls/ca.crt
+    working_dir: /opt/gopath/src/chaincode
+    command: /bin/bash -c 'sleep 6000000'
+    volumes:
+      - /var/run/:/host/var/run/
+      - ./../chaincode:/opt/gopath/src/chaincode
+     # - ./../chaincode-advanced:/opt/gopath/src/chaincode-advanced
+      - ./crypto-config:/opt/gopath/src/crypto
+    networks:
+      - certification
+

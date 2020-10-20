@@ -1,0 +1,179 @@
+Organizations:
+  - &OrdererOrg
+    Name: Orderer
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/certification-network.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+
+  - &iit
+    Name: iitMSP
+    ID: iitMSP
+    MSPDir: crypto-config/peerOrganizations/iit.certification-network.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('iitMSP.admin', 'iitMSP.peer', 'iitMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('iitMSP.admin', 'iitMSP.peer', 'iitMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('iitMSP.admin', 'iitMSP.peer', 'iitMSP.client')"
+    AnchorPeers:
+      - Host: peer0.iit.certification-network.com
+        Port: 7051
+
+  - &mhrd
+    Name: mhrdMSP
+    ID: mhrdMSP
+    MSPDir: crypto-config/peerOrganizations/mhrd.certification-network.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin', 'mhrdMSP.peer', 'mhrdMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin', 'mhrdMSP.peer', 'mhrdMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('mhrdMSP.admin', 'mhrdMSP.peer', 'mhrdMSP.client')"
+    AnchorPeers:
+      - Host: peer0.mhrd.certification-network.com
+        Port: 9051
+
+  - &upgrad
+    Name: upgradMSP
+    ID: upgradMSP
+    MSPDir: crypto-config/peerOrganizations/upgrad.certification-network.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('upgradMSP.admin', 'upgradMSP.peer', 'upgradMSP.client')"
+      Writers:
+        Type: Signature
+        Rule: "OR('upgradMSP.admin', 'upgradMSP.peer', 'upgradMSP.client')"
+      Admins:
+        Type: Signature
+        Rule: "OR('upgradMSP.admin', 'upgradMSP.peer', 'upgradMSP.client')"
+    AnchorPeers:
+      - Host: peer0.upgrad.certification-network.com
+        Port: 11051
+
+
+
+#Capabilities
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V1_4_3: true
+    V1_3: false
+    V1_1: false
+  Orderer: &OrdererCapabilities
+    V1_4_2: true
+    V1_1: false
+  Application: &ApplicationCapabilities
+    V1_4_2: true
+    V1_3: false
+    V1_2: false
+    V1_1: false
+
+#Application
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies: &ApplicationDefaultPolicies
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+  Capabilities: *ApplicationCapabilities
+
+#Orderer
+Orderer: &OrdererDefaults
+  OrdererType: solo
+  Addresses:
+    - orderer.certification-network.com:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+  Capabilities: *OrdererCapabilities
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+    # BlockValidation specifies what signatures must be included in the block
+    # from the orderer for the peer to validate it.
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Channel: &ChannelDefaults
+  Policies:
+    # Who may invoke the 'Deliver' API
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    # Who may invoke the 'Broadcast' API
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    # By default, who may modify elements at this config level
+    Admins:
+      Type: ImplicitMeta
+      Rule: "ANY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+
+#Profiles
+Profiles:
+  OrdererGenesis:
+    <<: *ChannelDefaults
+    Capabilities:
+      <<: *ChannelCapabilities
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererOrg
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      CertificationConsortium:
+        Organizations:
+          - *iit
+          - *mhrd
+          - *upgrad
+
+  CertificationChannel:
+    Consortium: CertificationConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *iit
+        - *mhrd
+        - *upgrad
+      Capabilities:
+        <<: *ApplicationCapabilities
