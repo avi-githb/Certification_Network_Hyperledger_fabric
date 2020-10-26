@@ -1,4 +1,4 @@
-- Certification Verification Network
+- Certificate Verification Network
 - Organization:
 1. IIT - University which will award Certificate to the student after course completion.
 2. MHRD - Ministry Of Human Resource Development - Organization which will act as a Regulator on the network
